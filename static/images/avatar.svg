@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img" aria-labelledby="title desc">
-  <title id="title">Zigeng Guo</title>
-  <desc id="desc">ZG monogram avatar</desc>
-  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#123f3b"/><stop offset="1" stop-color="#2f8076"/></linearGradient></defs>
-  <circle cx="160" cy="160" r="154" fill="url(#g)"/>
-  <circle cx="160" cy="160" r="132" fill="none" stroke="#f4b08a" stroke-width="4" opacity=".8"/>
-  <text x="160" y="188" text-anchor="middle" fill="#fff" font-family="Georgia,serif" font-size="105" font-weight="700" letter-spacing="-8">ZG</text>
-</svg>
-
