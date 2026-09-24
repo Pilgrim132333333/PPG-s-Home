@@ -1,18 +1,19 @@
 # 郭梓耕个人网站（Hugo）
 
-这是基于 [Hugo Profile](https://github.com/gurusabarish/hugo-profile) 主题搭建的个人网站。
+这是基于 [LoveIt](https://github.com/dillonzq/LoveIt) 主题搭建的个人网站。
 
 ## 目录说明
 
-- `hugo.yaml`：站点内容和主题配置，个人介绍、经历、教育和项目都在这里维护。
-- `content/`：后续可添加博客文章或独立页面。
+- `hugo.yaml`：站点、导航、主页、搜索与主题配置。
+- `content/`：关于、经历、项目，以及后续可添加的博客文章。
 - `static/`：图片、favicon 和下载文件等静态资源。
-- `themes/hugo-profile/`：通过 Git submodule 引入的 Hugo Profile 主题。
+- `assets/css/`：LoveIt 的配色与项目卡片自定义样式。
+- `themes/LoveIt/`：通过 Git submodule 引入的 LoveIt 主题。
 - `legacy-site/`：迁移前的旧版静态网站，原始文件保持不变。
 
 ## 本地预览
 
-1. 安装 Hugo 0.87.0 或更高版本。
+1. 安装 Hugo Extended 0.146.0 或更高版本。
 2. 克隆仓库时同步主题：
 
    ```powershell
@@ -42,5 +43,5 @@
 ## 更新主题
 
 ```powershell
-git submodule update --remote --merge themes/hugo-profile
+git submodule update --remote --merge themes/LoveIt
 ```
