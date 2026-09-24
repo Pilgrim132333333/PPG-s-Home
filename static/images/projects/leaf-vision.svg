@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Leaf Recognition</title><desc id="desc">Leaf inside a computer vision focus frame</desc>
+  <rect width="1200" height="675" fill="#173e39"/><path d="M600 545C380 420 390 185 815 135c45 340-80 445-215 410z" fill="#a8d4b7"/><path d="M425 570c95-150 215-260 390-435" fill="none" stroke="#f3a57d" stroke-width="18"/><g fill="none" stroke="#fff" stroke-width="16"><path d="M180 220V105h115M905 105h115v115M180 455v115h115M905 570h115V455"/></g><circle cx="600" cy="340" r="230" fill="none" stroke="#fff" stroke-width="8" stroke-dasharray="20 18" opacity=".55"/>
+</svg>

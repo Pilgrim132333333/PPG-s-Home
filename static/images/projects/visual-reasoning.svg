@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Visual Reasoning</title><desc id="desc">A three by three abstract reasoning grid</desc>
+  <rect width="1200" height="675" fill="#163b39"/><g fill="none" stroke="#e8efe8" stroke-width="12">
+    <rect x="250" y="90" width="180" height="140"/><rect x="510" y="90" width="180" height="140"/><rect x="770" y="90" width="180" height="140"/>
+    <rect x="250" y="268" width="180" height="140"/><rect x="510" y="268" width="180" height="140"/><rect x="770" y="268" width="180" height="140"/>
+    <rect x="250" y="446" width="180" height="140"/><rect x="510" y="446" width="180" height="140"/><rect x="770" y="446" width="180" height="140"/>
+  </g><g fill="#f4a47c"><circle cx="340" cy="160" r="38"/><rect x="555" y="115" width="90" height="90"/><path d="m860 112 52 95H808z"/><rect x="295" y="290" width="90" height="90"/><path d="m600 290 52 95H548z"/><circle cx="860" cy="338" r="38"/><path d="m340 468 52 95H288z"/><circle cx="600" cy="516" r="38"/></g><text x="860" y="545" text-anchor="middle" font-family="sans-serif" font-size="92" fill="#e8efe8">?</text>
+</svg>

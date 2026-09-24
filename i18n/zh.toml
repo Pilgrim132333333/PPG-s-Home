@@ -1,0 +1,71 @@
+[nav_about]
+other = "关于"
+
+[nav_experience]
+other = "经历"
+
+[nav_education]
+other = "教育"
+
+[nav_projects]
+other = "项目"
+
+[nav_achievements]
+other = "成果"
+
+[nav_contact]
+other = "联系"
+
+[search_placeholder]
+other = "搜索……"
+
+[about]
+other = "关于我"
+
+[experience]
+other = "经历"
+
+[education]
+other = "教育"
+
+[projects]
+other = "项目"
+
+[achievements]
+other = "成果"
+
+[contact]
+other = "联系我"
+
+[contact_email_placeholder]
+other = "输入邮箱"
+
+[contact_message_placeholder]
+other = "输入消息"
+
+[recent_posts]
+other = "近期文章"
+
+[read]
+other = "阅读"
+
+[toc]
+other = "目录"
+
+[tags]
+other = "标签"
+
+[social]
+other = "分享"
+
+[copyright]
+other = "保留所有权利"
+
+[email_text]
+other = "看看这个网站"
+
+[page_not_found]
+other = "页面未找到"
+
+[min_read]
+other = "分钟阅读"

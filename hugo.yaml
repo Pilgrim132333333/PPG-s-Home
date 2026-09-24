@@ -1,0 +1,202 @@
+baseURL: "https://pilgrim132333333.github.io/PPG-s-Home/"
+locale: "zh-CN"
+title: "郭梓耕 Zigeng Guo"
+theme: "hugo-profile"
+canonifyURLs: true
+enableRobotsTXT: true
+defaultContentLanguage: "zh"
+defaultContentLanguageInSubdir: false
+
+languages:
+  zh:
+    label: "中文"
+    locale: "zh-CN"
+    weight: 1
+
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+  page:
+    - HTML
+    - RSS
+
+pagination:
+  pagerSize: 6
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+
+caches:
+  images:
+    dir: ":cacheDir/images"
+
+params:
+  title: "郭梓耕 Zigeng Guo"
+  description: "郭梓耕的个人网站：计算机科学、AI 应用、全栈开发、算法实验与计算机视觉。"
+  favicon: "/favicon.png"
+  useBootstrapCDN: false
+  animate: true
+
+  theme:
+    defaultTheme: "light"
+
+  color:
+    textColor: "#243238"
+    secondaryTextColor: "#607078"
+    textLinkColor: "#0c6b63"
+    backgroundColor: "#f7f4ee"
+    secondaryBackgroundColor: "#dce8e4"
+    primaryColor: "#0f5f59"
+    secondaryColor: "#ffffff"
+    darkmode:
+      textColor: "#e8efed"
+      secondaryTextColor: "#aabbb7"
+      textLinkColor: "#80d3c7"
+      backgroundColor: "#14201f"
+      secondaryBackgroundColor: "#1d2d2b"
+      primaryColor: "#8ad9ce"
+      secondaryColor: "#182624"
+
+  navbar:
+    brandName: "Zigeng Guo"
+    showBrandLogo: false
+    disableSearch: true
+    stickyNavBar:
+      enable: true
+      showOnScrollUp: true
+    enableSeparator: false
+    menus:
+      disableAbout: false
+      disableExperience: false
+      disableEducation: false
+      disableProjects: false
+      disableAchievements: true
+      disableContact: false
+
+  hero:
+    enable: true
+    intro: "你好，我是"
+    title: "郭梓耕。"
+    subtitle: "Computer Science · AI Applications · Full-Stack"
+    content: "我把复杂问题拆成清晰步骤，再用工程方法把它们做成可靠、可维护、真正有用的产品。"
+    image: "/images/hero-studio.png"
+    bottomImage:
+      enable: true
+    button:
+      enable: true
+      name: "查看个人简介"
+      url: "/files/zigeng-guo-profile.txt"
+      download: true
+      newPage: false
+    socialLinks:
+      fontAwesomeIcons:
+        - icon: "fab fa-github"
+          url: "https://github.com/Pilgrim132333333"
+        - icon: "fas fa-envelope"
+          url: "mailto:pilgrim137735@gmail.com"
+
+  about:
+    enable: true
+    title: "About Me"
+    content: |-
+      我是郭梓耕，一名计算机科学方向的学生，关注 AI 应用、全栈系统、算法实验和计算机视觉。
+
+      我的项目经历覆盖 AI 学习助手、在线背包问题遗传算法、3D 情感表达 AI Agent、叶子识别和跨域抽象视觉推理。我喜欢在“能运行”之外继续追问：数据是否组织清楚、用户是否真的顺手、系统是否能长期维护、实验结论是否可复现。
+    skills:
+      enable: true
+      title: "近期主要使用的技术："
+      items:
+        - "Java / Spring Boot"
+        - "Python / Machine Learning"
+        - "C++ / Algorithm Design"
+        - "Vue.js / Web Frontend"
+        - "MySQL / Database Design"
+        - "LLM / Knowledge Base Apps"
+        - "Computer Vision"
+        - "Experiment Design"
+
+  experience:
+    enable: true
+    title: "Experience"
+    items:
+      - company: "Lenovo GSG E2E Department"
+        jobs:
+          - name: "Software Development Intern"
+            date: "2025"
+            content: "参与内部供应商系统搭建与维护，使用 Java / Spring Boot 支持数据日期追踪、定期归档和后端流程维护。"
+      - company: "University Website Development"
+        jobs:
+          - name: "Full-Stack Development Intern"
+            date: "Campus"
+            content: "参与大学官方网站开发和维护，支持页面功能更新、前后端协作和日常内容维护。"
+      - company: "Tianjin Binhai Advanced Research Institute"
+        jobs:
+          - name: "GIS Research Intern"
+            date: "2023"
+            content: "在地理信息研究部门参与技术研究任务，接触地理空间技术、数据研究和技术文档整理。"
+
+  education:
+    enable: true
+    title: "Education"
+    index: false
+    items:
+      - title: "BSc in Computer Science"
+        school:
+          name: "University of Nottingham"
+          url: "https://www.nottingham.edu.cn/"
+        date: "2022 - Present"
+        GPA: "3.9 / 4.0"
+        content: "系统学习数据结构、算法、数据库、软件工程、人工智能和计算机视觉等方向。"
+
+  achievements:
+    enable: false
+
+  projects:
+    enable: true
+    title: "Projects"
+    items:
+      - title: "诺丁汉大学计算机系学习助手"
+        content: "组织课程资料、题库、历史学习数据和个人知识库，让 AI 更好服务复习、问答和知识沉淀。"
+        image: "/images/projects/ai-learning.svg"
+        badges: ["LLM", "Knowledge Base", "Full-Stack"]
+      - title: "跨域抽象视觉推理数据集"
+        content: "构建 RAVEN-style 3×3 数据集，关注规则标注、解释文本、泛化验证和可解释性。"
+        image: "/images/projects/visual-reasoning.svg"
+        badges: ["Computer Vision", "Dataset", "Reasoning"]
+      - title: "遗传算法解决在线背包问题"
+        content: "从编码、适应度函数到选择、交叉、变异，搭建可对比、可调参的算法实验流程。"
+        image: "/images/projects/algorithm.svg"
+        badges: ["C++", "Genetic Algorithm", "Optimization"]
+      - title: "Emotionally Expressive 3D AI Agent"
+        content: "探索 3D 智能体如何通过面部表情和语调表达情感，让交互更自然。"
+        image: "/images/projects/ai-agent.svg"
+        badges: ["AI Agent", "3D", "Human-Computer Interaction"]
+      - title: "叶子识别项目"
+        content: "使用 MTD、LBP、color model 和高斯模糊优化图像预处理与特征提取。"
+        image: "/images/projects/leaf-vision.svg"
+        badges: ["Computer Vision", "Feature Extraction", "Python"]
+      - title: "大学官方网站开发维护"
+        content: "参与页面功能更新、维护流程和 Web 系统协作，让项目稳定服务真实使用场景。"
+        image: "/images/projects/web-system.svg"
+        badges: ["Web", "Full-Stack", "Maintenance"]
+
+  contact:
+    enable: true
+    title: "Contact"
+    content: "如果你想了解我的项目、实习经历，或有 AI 应用、全栈开发、计算机视觉相关机会，欢迎直接联系我。"
+    btnName: "发送邮件"
+    btnLink: "mailto:pilgrim137735@gmail.com"
+
+  footer:
+    recentPosts:
+      enable: false
+    socialNetworks:
+      github: "https://github.com/Pilgrim132333333"
+
+  terms:
+    copyright: "Zigeng Guo. All rights reserved."
+    pageNotFound: "页面未找到"

@@ -1,0 +1,19 @@
+Zigeng Guo / 郭梓耕
+
+Computer Science · AI Applications · Full-Stack Systems
+
+Contact
+- Personal email: pilgrim137735@gmail.com
+- University email: scyzg6@nottingham.edu.cn
+- Phone: +86 18649201011
+
+Focus
+- AI learning tools and knowledge-base applications
+- Java / Spring Boot backend systems
+- Algorithm experiments and optimization
+- Computer vision and abstract visual reasoning
+
+Selected Experience
+- Lenovo GSG E2E Department: software development intern, internal supplier system, Java / Spring Boot data tracking and scheduled archiving
+- University website development: full-stack development and maintenance
+- Tianjin Binhai Advanced Research Institute: GIS research internship

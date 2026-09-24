@@ -1,17 +1,46 @@
-# 郭梓耕个人展示网站
+# 郭梓耕个人网站（Hugo）
 
-这是基于 `browny-v1.0` 模板改造的个人展示网站，已替换为郭梓耕的个人内容。
+这是基于 [Hugo Profile](https://github.com/gurusabarish/hugo-profile) 主题搭建的个人网站。
 
-## 当前结构
+## 目录说明
 
-- `index.html`: Browny 单页网站结构，包含首页、About、Education、Skills、Experience、Focus、Projects、Contact。
-- `assets/`: Browny 模板资源，包括 Bootstrap、Font Awesome、脚本、图片和字体。
-- `assets/css/portfolio-custom.css`: 在 Browny 原样式之上的自定义优化样式。
-- `assets/download/zigeng-guo-profile.txt`: 简短个人 profile 下载文件。
+- `hugo.yaml`：站点内容和主题配置，个人介绍、经历、教育和项目都在这里维护。
+- `content/`：后续可添加博客文章或独立页面。
+- `static/`：图片、favicon 和下载文件等静态资源。
+- `themes/hugo-profile/`：通过 Git submodule 引入的 Hugo Profile 主题。
+- `legacy-site/`：迁移前的旧版静态网站，原始文件保持不变。
 
-## 内容重点
+## 本地预览
 
-- 个人定位：Computer Science · AI Applications · Full-Stack。
-- 项目：AI 学习助手、跨域视觉推理、遗传算法、3D AI Agent、叶子识别、大学官网维护。
-- 经历：Lenovo GSG E2E、大学官网全栈开发、GIS 研究实习。
-- 联系方式：邮箱和电话均可点击跳转。
+1. 安装 Hugo 0.87.0 或更高版本。
+2. 克隆仓库时同步主题：
+
+   ```powershell
+   git clone --recurse-submodules https://github.com/Pilgrim132333333/PPG-s-Home.git
+   ```
+
+   已经克隆过仓库时运行：
+
+   ```powershell
+   git submodule update --init --recursive
+   ```
+
+3. 启动开发服务器：
+
+   ```powershell
+   hugo server -D
+   ```
+
+4. 生成可部署网站：
+
+   ```powershell
+   hugo --minify
+   ```
+
+生成结果位于 `public/`，该目录不会提交到 Git。
+
+## 更新主题
+
+```powershell
+git submodule update --remote --merge themes/hugo-profile
+```
