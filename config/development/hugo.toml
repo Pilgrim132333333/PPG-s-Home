@@ -1,0 +1,5 @@
+# Development environment overrides (applied by `hugo server`)
+# 开发环境覆盖（`hugo server` 自动使用）
+# Local preview uses root-relative URLs so assets load on http://127.0.0.1:1313/
+# Production build (`hugo`) uses config/production/hugo.toml instead.
+baseURL = "http://127.0.0.1:1313/"

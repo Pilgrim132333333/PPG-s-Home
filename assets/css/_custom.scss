@@ -2,3 +2,50 @@
 // Custom style
 // 自定义样式
 // ==============================
+
+// Keep category cards balanced on both wide and narrow viewports. The theme's
+// default flex layout leaves a single category stranded at half width.
+.archive .categories-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1.5rem;
+  align-items: stretch;
+  margin-top: 2rem;
+
+  .card-item {
+    box-sizing: border-box;
+    width: auto;
+    min-height: 0;
+    margin-top: 0;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid rgba(0, 0, 0, .08);
+    border-radius: .5rem;
+
+    [theme=dark] & {
+      border-color: rgba(255, 255, 255, .12);
+    }
+
+    .card-item-wrapper .card-item-title {
+      margin-top: 0;
+    }
+  }
+
+  .category-count {
+    margin-left: .25rem;
+    color: #a9a9b3;
+    font-size: .75em;
+    font-weight: normal;
+  }
+}
+
+.archive .categories-empty {
+  margin-top: 3rem;
+  text-align: center;
+  color: #a9a9b3;
+}
+
+@media only screen and (max-width: 680px) {
+  .archive .categories-card {
+    grid-template-columns: 1fr;
+  }
+}

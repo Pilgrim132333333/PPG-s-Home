@@ -1,0 +1,3 @@
+# GitHub Pages serves this project from a repository subpath.
+# The deployment workflow also supplies this value dynamically via --baseURL.
+baseURL = "https://pilgrim132333333.github.io/PPG-s-Home/"

@@ -1,0 +1,47 @@
+{{- define "title" -}}
+    {{- .Params.Title | default (T .Data.Plural) | default .Data.Plural | dict "Some" | T "allSome" }} - {{ .Site.Title -}}
+{{- end -}}
+
+{{- define "content" -}}
+    {{- $taxonomies := .Data.Plural -}}
+    {{- $terms := .Data.Terms.ByCount -}}
+
+    <div class="page archive">
+        <h2 class="single-title animate__animated animate__pulse animate__faster">
+            {{- .Params.Title | default (T $taxonomies) | default $taxonomies | dict "Some" | T "allSome" -}}
+        </h2>
+
+        {{- if $terms -}}
+            <div class="categories-card">
+                {{- range $terms -}}
+                    {{- $termPage := .Page -}}
+                    {{- $pages := .Pages.ByPublishDate.Reverse -}}
+                    <section class="card-item">
+                        <div class="card-item-wrapper">
+                            <h3 class="card-item-title">
+                                <a href="{{ $termPage.RelPermalink }}">
+                                    <i class="far fa-folder" aria-hidden="true"></i>&nbsp;{{ $termPage.Title }}
+                                    <sup class="category-count">{{ .Count }}</sup>
+                                </a>
+                            </h3>
+                            {{- range first 5 $pages -}}
+                                <article class="archive-item">
+                                    <a href="{{ .RelPermalink }}" class="archive-item-link">
+                                        {{- .Title | emojify -}}
+                                    </a>
+                                </article>
+                            {{- end -}}
+                            {{- if gt (len $pages) 5 -}}
+                                <span class="more-post">
+                                    <a href="{{ $termPage.RelPermalink }}" class="more-single-link">{{ T "more" }} &gt;&gt;</a>
+                                </span>
+                            {{- end -}}
+                        </div>
+                    </section>
+                {{- end -}}
+            </div>
+        {{- else -}}
+            <p class="categories-empty">{{ T "noResultsFound" | default "No categories yet." }}</p>
+        {{- end -}}
+    </div>
+{{- end -}}
