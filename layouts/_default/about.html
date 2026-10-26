@@ -1,0 +1,45 @@
+{{- define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end -}}
+
+{{- define "content" -}}
+  <article class="page about-page">
+    <header class="about-hero">
+      <div class="about-hero-copy">
+        <p class="about-eyebrow">{{ .Params.eyebrow }}</p>
+        <h1>{{ .Params.headline }}</h1>
+        <p class="about-intro">{{ .Params.intro }}</p>
+        <div class="about-actions">
+          <a class="about-action about-action-primary" href="mailto:pilgrim137735@gmail.com">
+            {{ .Params.contactLabel }} <span aria-hidden="true">↗</span>
+          </a>
+          <a class="about-action" href="https://github.com/Pilgrim132333333" target="_blank" rel="noopener noreferrer">
+            GitHub <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+        <ul class="about-signals" aria-label="{{ .Params.signalLabel }}">
+          {{- range .Params.signals -}}
+            <li>{{ . }}</li>
+          {{- end -}}
+        </ul>
+      </div>
+
+      <div class="about-portrait-wrap">
+        <div class="about-portrait-glow" aria-hidden="true"></div>
+        <img
+          class="about-portrait"
+          src="{{ "images/avatar.png" | relURL }}"
+          width="583"
+          height="583"
+          alt="{{ .Params.portraitAlt }}"
+        >
+        <div class="about-status">
+          <span aria-hidden="true"></span>
+          {{ .Params.status }}
+        </div>
+      </div>
+    </header>
+
+    <div class="about-body content" id="content">
+      {{- .RawContent | safeHTML -}}
+    </div>
+  </article>
+{{- end -}}
