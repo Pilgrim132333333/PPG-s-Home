@@ -4,123 +4,87 @@ date: 2026-09-26
 draft: false
 layout: "about"
 comment: false
-description: "郭梓耕：关注 LLM 推理系统、抽象视觉推理和可落地的 AI 工程。"
-eyebrow: "郭梓耕 · Computer Science"
-headline: "把复杂问题拆开，直到它可以被理解、实现和验证。"
-intro: "我在诺丁汉大学学习计算机科学。目前，我把主要精力放在 LLM 推理系统、抽象视觉推理和 AI 工程上：既想理解一行底层代码为什么影响性能，也想知道一个研究想法如何变成可靠的实验。"
-contactLabel: "和我聊聊"
-signalLabel: "个人关键词"
-signals: ["Inference Systems", "Visual Reasoning", "Open Source", "Build to Learn"]
+description: "郭梓耕的自我介绍：写代码、调 bug、偶尔建点什么，大部分时间都在自我怀疑。"
+eyebrow: "👋 你好，我是郭梓耕"
+headline: "把『这到底咋回事？』变成『哦，原来是这么回事』——虽然常常要花很久。"
+intro: "计算机在读，业余代码考古学家。喜欢扒别人写的聪明代码，然后自己动手写一版——通常比原版烂，但是我的。"
+contactLabel: "来聊聊天"
+signalLabel: "我常说的话"
+signals: ["真的，在我机器上能跑", "再改一个 commit 就睡", "等等，这里为什么这么慢？", "文档明天一定补"]
 portraitAlt: "郭梓耕的头像"
-status: "正在构建 MiniServing，并探索 LLM serving 与视觉推理"
+status: "最近在：写 MiniServing、看 LMCache、以及向自己解释内核为什么崩了"
 ---
 
-<section class="about-section" aria-labelledby="about-now-zh">
+<section class="about-section about-letter-section" aria-labelledby="about-me-zh">
   <div class="about-section-heading">
     <span>01</span>
     <div>
-      <p class="about-kicker">Right now</p>
-      <h2 id="about-now-zh">我现在关注的三件事</h2>
+      <p class="about-kicker">说点实话</p>
+      <h2 id="about-me-zh">我一天到晚到底在干嘛</h2>
     </div>
   </div>
 
-  <div class="about-focus-grid">
-    <article class="about-focus-card about-focus-card-featured">
-      <span class="about-card-code">SYS</span>
-      <h3>LLM 推理系统</h3>
-      <p>从 MiniServing 的调度器、Continuous Batching 和 Paged KV Cache 出发，继续阅读 vLLM 与 LMCache。我希望理解性能问题怎样从 Tensor 布局一路传导到缓存、调度与分布式数据流。</p>
-      <div class="about-tag-row"><span>C++</span><span>CUDA</span><span>PyTorch</span><span>KV Cache</span></div>
-    </article>
-
-    <article class="about-focus-card">
-      <span class="about-card-code">VIS</span>
-      <h3>抽象视觉推理</h3>
-      <p>围绕 3D RAVEN-style 数据集、PredRNet、STSN 与感知模块做实验，关注模型是否真的学会规则，以及它能否跨域泛化，而不只是记住训练分布。</p>
-      <div class="about-tag-row"><span>3D RAVEN</span><span>Reasoning</span><span>OOD</span></div>
-    </article>
-
-    <article class="about-focus-card">
-      <span class="about-card-code">BLD</span>
-      <h3>把想法做成工具</h3>
-      <p>从 AI 学习助手到 Web 系统和实验流水线，我关心的不只是功能能否运行，也关心资料怎样组织、反馈怎样进入系统，以及别人能否清楚地使用和维护它。</p>
-      <div class="about-tag-row"><span>Python</span><span>Java</span><span>Web</span><span>AI Apps</span></div>
-    </article>
+  <div class="about-letter">
+    <p>一个冷知识：我大部分时间都处于「搞不懂」状态，只是伪装得比较好。我的工作流程很简单——看到一个不懂的东西，先被它冒犯一下，然后不搞明白就不睡觉。</p>
+    <p>现在让我搞不懂的主要是 AI 系统和推理。我喜欢读比我聪明的人写的代码（vLLM、LMCache，就是那几位老朋友），然后自己试着写个迷你版。我的版本更烂，但它是<em>我的</em>。说真的，在 C++ 里弄崩一个东西，比读十篇教程学到的都多。</p>
+    <p>这个博客就是我扔学习笔记的地方，好让未来的自己不用把同一个 bug 调三遍。要是顺便帮到了你，那就是意外之喜。</p>
   </div>
 </section>
 
-<section class="about-section about-method" aria-labelledby="about-method-zh">
+<section class="about-section" aria-labelledby="about-current-zh">
   <div class="about-section-heading">
     <span>02</span>
     <div>
-      <p class="about-kicker">How I work</p>
-      <h2 id="about-method-zh">我的工作方式</h2>
+      <p class="about-kicker">桌面上</p>
+      <h2 id="about-current-zh">最近在折腾（以及搞坏）的东西</h2>
     </div>
   </div>
 
-  <div class="about-principles">
-    <article>
-      <strong>01</strong>
-      <h3>先建立可验证的最小路径</h3>
-      <p>面对大系统时，我习惯先做最小实现和可信参考，再逐步增加优化。正确性不是性能之后的补丁，而是优化的起点。</p>
+  <div class="about-focus-grid about-current-grid">
+    <article class="about-focus-card about-focus-card-featured">
+      <span class="about-card-code">01 · MiniServing</span>
+      <h3>手搓一个小型 LLM 推理服务，专挑难路走</h3>
+      <p>我本可以用现成框架？当然可以。但我偏要自己手写 continuous batching 和 paged KV cache？也没错。它起初只是「我想弄懂推理是怎么跑的」，很快就变成了「要不我从头实现一个吧」。通往理解最快的路，同时也是通往后悔最快的路。</p>
+      <div class="about-tag-row"><span>C++</span><span>CUDA</span><span>PyTorch</span><span>后悔</span></div>
     </article>
-    <article>
-      <strong>02</strong>
-      <h3>在抽象层之间追问题</h3>
-      <p>一个异常可能来自数学、Tensor 布局、算子、缓存或调度。我喜欢沿着数据流向下追，直到每个假设都能被解释。</p>
+
+    <article class="about-focus-card">
+      <span class="about-card-code">02 · Visual Reasoning</span>
+      <h3>让模型证明自己是真懂了</h3>
+      <p>我在跑 3D RAVEN 这类的抽象视觉推理实验。最有趣的部分是抓模型作弊——它答案对了，但压根没学到规律，简直就像我。我的活，就是不让它们蒙混过关。</p>
+      <div class="about-tag-row"><span>3D RAVEN</span><span>PredRNet</span><span>OOD</span></div>
     </article>
-    <article>
-      <strong>03</strong>
-      <h3>把过程沉淀下来</h3>
-      <p>我会记录设计选择、失败原因和实验边界。写作帮助我判断自己究竟理解了什么，也让下一次迭代更快。</p>
+
+    <article class="about-focus-card">
+      <span class="about-card-code">03 · Open Source</span>
+      <h3>读那些我希望是自己写的代码</h3>
+      <p>我把 vLLM 和 LMCache 的 issue 当悬疑小说看。顺着一个 bug 在庞然大物般的代码库里追到底，那种满足感很奇妙——就像在衣服堆里找到一只袜子，只不过你找到的不叫袜子，叫内存泄漏。</p>
+      <div class="about-tag-row"><span>vLLM</span><span>LMCache</span><span>Issues</span></div>
     </article>
   </div>
 </section>
 
-<section class="about-section" aria-labelledby="about-path-zh">
+<section class="about-section" aria-labelledby="about-bits-zh">
   <div class="about-section-heading">
     <span>03</span>
     <div>
-      <p class="about-kicker">Selected path</p>
-      <h2 id="about-path-zh">学习与实践</h2>
+      <p class="about-kicker">简历部分</p>
+      <h2 id="about-bits-zh">正经信息（证明我不只是嘴贫）</h2>
     </div>
   </div>
 
-  <div class="about-timeline">
-    <article>
-      <div class="about-time">2022 — 至今</div>
-      <div>
-        <h3>计算机科学 · University of Nottingham</h3>
-        <p>GPA 3.9 / 4.0，Ye Yaozhen 奖学金获得者。我的课程基础覆盖数据结构、算法、数据库、软件工程、人工智能和计算机视觉。</p>
-      </div>
-    </article>
-    <article>
-      <div class="about-time">2025</div>
-      <div>
-        <h3>软件开发实习 · Lenovo GSG E2E</h3>
-        <p>参与内部供应商系统的搭建与维护，使用 Java / Spring Boot 支持数据日期追踪、定期归档与后端流程。</p>
-      </div>
-    </article>
-    <article>
-      <div class="about-time">Campus</div>
-      <div>
-        <h3>全栈开发 · 大学官方网站</h3>
-        <p>参与网站功能更新和日常维护，在真实使用场景中理解前后端协作、内容管理与长期维护。</p>
-      </div>
-    </article>
-    <article>
-      <div class="about-time">2023</div>
-      <div>
-        <h3>GIS 研究实习 · 天津市滨海新区先进研究院</h3>
-        <p>参与地理信息方向的技术研究任务，接触地理空间技术、数据研究和技术文档整理。</p>
-      </div>
-    </article>
+  <div class="about-fact-grid">
+    <article><span>在读</span><p>诺丁汉大学计算机科学<br>有个我不想大声说怕说没了的绩点</p></article>
+    <article><span>做过</span><p>在联想用 Java / Spring Boot 参与内部供应商系统——在那里我学会了「本地能跑」是个危险的句子</p></article>
+    <article><span>也做过</span><p>大学官网开发维护，加上 GIS 研究实习，看地图看到对制图师肃然起敬</p></article>
+    <article><span>想去的方向</span><p>AI 系统、开源工程，以及那些真能回答的问题</p></article>
   </div>
 </section>
 
-<section class="about-section about-closing" aria-labelledby="about-next-zh">
-  <p class="about-kicker">Next</p>
-  <h2 id="about-next-zh">我想继续靠近真正困难、也真正有用的问题。</h2>
-  <p>现在的我仍在形成自己的方向。我希望继续参与开源系统和研究项目，在系统性能、模型能力与真实使用之间建立更扎实的连接。</p>
+<section class="about-section about-closing" aria-labelledby="about-hello-zh">
+  <p class="about-kicker">来打招呼</p>
+  <h2 id="about-hello-zh">如果你也在调 bug，我们一起来困惑吧。</h2>
+  <p>可以聊推理系统、视觉推理、开源，或者直接把你最诡异的 bug 发给我，我们一起破案。</p>
   <div class="about-closing-links">
     <a href="mailto:pilgrim137735@gmail.com">pilgrim137735@gmail.com <span aria-hidden="true">↗</span></a>
     <a href="https://github.com/Pilgrim132333333" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>

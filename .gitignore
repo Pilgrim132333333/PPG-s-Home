@@ -3,3 +3,5 @@
 public/
 resources/_gen/
 .hugo_build.lock
+# 本地开发 workaround：生产构建走 jsDelivr CDN，不需要提交到仓库
+assets/lib/
