@@ -1,8 +1,8 @@
 ---
 title: "ZMQ & Implement in LmCache"
 date: 2026-10-30
-description: "从 ZeroMQ 的 Context、Socket、Transport 与 Poller 出发，梳理 LMCache 中 Worker 和消息队列服务端的通信链路。"
-summary: "为什么 LMCache 使用 DEALER/ROUTER？一次请求又如何找到正确的客户端与 Future？"
+description: "ZMQ 的概念、消息交流流程，以及在 LMCache 中的应用。"
+summary: "从 Context、Socket、Poller 到 LMCache 的 MQC、ClientPollingLoop 与 MQS。"
 categories: ["技术"]
 tags: ["LMCache", "ZeroMQ", "ZMQ", "LLM Serving", "消息队列"]
 draft: false
@@ -10,21 +10,11 @@ toc:
   enable: true
 ---
 
-读 LMCache 的消息队列实现时，我先被几个名字绕住了：`MessageQueueClient`、`ClientPollingLoop`、`MessageQueueServer`，再加上 ZMQ 的 `DEALER`、`ROUTER` 和 `Poller`。把它们放到一条请求链路上，关系就清楚了：**Worker 把操作发给 LMCache 服务端，服务端处理后把结果送回对应的客户端，再由请求 ID 找到等待中的 Future。**
+# ZMQ
 
-## ZMQ 是什么
+ZeroMQ的简称
 
-ZeroMQ（ZMQ）是一套轻量的消息通信库。它不强制要求独立的中心 broker；通信双方各自在进程内创建 ZMQ Context 和 Socket，就可以直接交换消息。
-
-```text
-Worker 进程                       LMCache Server 进程
-  ZMQ Context                         ZMQ Context
-    └─ DEALER Socket  ←── 消息 ──→      └─ ROUTER Socket
-```
-
-`Context` 管理后台 I/O 等运行资源，通常一个进程共用一个。`Socket` 是具体的通信端点，一个进程可以有多个。这里的 ZMQ Socket 还封装了收发和路由语义，比操作系统的 TCP socket 更高一层。
-
-比如，下面的 `PUSH` Socket 就能连接到一个地址并发送消息：
+追求轻量，低开销，少运维负担的设计理念。关键特点是：不强制要求一个中心消息代理（broker），两个进程直接通过ZeroMQ通信，不必先启动一套消息队列服务器
 
 ```python
 import zmq
@@ -35,100 +25,154 @@ socket.connect("tcp://127.0.0.1:5555")
 socket.send_string("hello")
 ```
 
-### Socket 模式与传输路径是两件事
-
-Socket 类型决定**怎样收发**，Transport 决定**消息从哪里走**。
-
-| Transport | 地址示例 | 范围 | TCP 端口 |
-| --- | --- | --- | --- |
-| TCP | `tcp://127.0.0.1:5555` | 同机或跨机器 | 需要 |
-| IPC | `ipc:///tmp/my-zmq.sock` | 同机跨进程 | 不需要 |
-| inproc | `inproc://my-channel` | 同进程、同 Context | 不需要 |
-
-端口是 TCP 地址的一部分，并非 ZMQ 独有。同一个服务端地址可以接受多个客户端连接；服务端通常用一个 Socket `bind` 该地址，各客户端分别 `connect`。
+每个进程都需要内部嵌入一个ZMQ，通过每个进程的ZMQ对象，我们可以实现快速通信：
 
 ```text
+进程 A                            进程 B
+  ZMQ Context                      ZMQ Context
+    └─ ZMQ Socket  ←── 通信 ──→      └─ ZMQ Socket
+```
+
+“”Context”” : 管理ZMQ运行资源，例如后台I/O thread，通常一个process共用一个
+
+“”Socket””: 具体的通信端点，一个process可以创建多个
+
+我们需要注意这里的端口：端口只是TCP的一部分，不是专属于ZMQ。我们还可以使用IPC：
+
+| **ZMQ 传输方式** | **地址示例** | **是否需要 TCP 端口** |
+| --- | --- | --- |
+| TCP：同机或跨机器通信 | `tcp://127.0.0.1:5555` | 是 |
+| IPC：同机跨进程通信 | `ipc:///tmp/my-zmq.sock` | 否 |
+| inproc：同一进程、同一 Context 内通信 | `inproc://my-channel` | 否 |
+
+不同的传输方式将会决定数据怎么运过去，底层会添加相应的传输包装
+
+## Port
+
+端口在这里的意义提供一个交流的窗口，其可以connect多个socket，但是仅仅可以bind一个socket
+
+```py
 客户端 A：127.0.0.1:41001 ←→ 服务端：127.0.0.1:5555
 客户端 B：127.0.0.1:41002 ←→ 服务端：127.0.0.1:5555
 ```
 
-常见 Socket 模式包括严格交替收发的 `REQ/REP`、发布订阅的 `PUB/SUB`、单向任务分发的 `PUSH/PULL`。LMCache 这里更关键的是 **`DEALER/ROUTER`**：`DEALER` 可以异步收发，不必像 `REQ` 那样等一个回复才能发下一个请求；`ROUTER` 在接收时知道对端身份，发送时可以指定目标客户端。
+也就是说可以有很多socket给一个端口发送消息，但是只有一个socket可以监听这个端口，收到消息
 
-## 一条消息是怎么到达的
+## 消息交流流程
 
-以客户端 `DEALER` 通过 TCP 向服务端 `ROUTER` 发消息为例：
+以DEALER通过TCP向Router发消息为例子
 
-```text
-应用调用 dealer.send(...)
-  → 发送端 ZMQ / TCP
-  → 接收端操作系统的 TCP 缓冲区
-  → 接收端 ZMQ 后台 I/O 线程解析并入队
-  → 应用调用 router.recv_multipart() 取出消息
+```py
+发送端应用
+    │ dealer.send(b"hello")
+    ↓
+发送端 ZMQ
+    │ 通过 TCP 发送
+    ↓
+接收端操作系统的 TCP 接收缓冲区
+    │
+    ↓
+接收端 ZMQ 后台 I/O 线程
+    │ 解析消息，放入内部接收队列
+    ↓
+接收端应用
+      router.recv_multipart() → 取出消息
 ```
 
-网络 I/O 和业务处理因此可以分开。业务线程看到的是完整消息，而不需要自己处理 TCP 字节流的边界。
+## Socket
 
-## 为什么需要 Poller
+socket最基本的意思是传输的数据单位，比如在操作系统socket中：
 
-如果线程阻塞在 `socket_a.recv()`，即使 `socket_b` 已有消息，它仍会继续等待 A。`zmq.Poller` 让一个事件循环同时观察多个 Socket：
+```text
+进程 A 的 socket ←── 操作系统 / 网络 ──→ 进程 B 的 socket
+```
 
-```python
+但是在ZMQ socket中，其语义是一种传输方式，更像数据单位的上层包装抽象
+
+在ZMQ中有很多种socket， 我们可以理解它们为不同的收发方式：
+
+| **通信模式** | **Socket 类型** | **主要行为** |
+| --- | --- | --- |
+| 请求 / 回复 | `REQ` | 默认“发一个请求，收一个回复”，严格交替 |
+| 请求 / 回复 | `REP` | 默认“收一个请求，发一个回复”，严格交替 |
+| 异步双向通信 | `DEALER` | 收发不必交替；向多个对端轮询分发消息 |
+| 按对端路由 | `ROUTER` | 接收时携带对端身份；发送时指定目标对端 |
+| 发布 / 订阅 | `PUB` | 向匹配订阅的订阅者发布消息 |
+| 发布 / 订阅 | `SUB` | 按设置的主题前缀过滤并接收消息 |
+| 扩展发布 / 订阅 | `XPUB` | 类似 PUB，还能接收订阅 / 退订通知 |
+| 扩展发布 / 订阅 | `XSUB` | 类似 SUB，可通过消息发送订阅 / 退订指令 |
+| 任务流水线 | `PUSH` | 只发送，将消息分配给下游 |
+| 任务流水线 | `PULL` | 只接收，从上游接收消息 |
+| 一对一通信 | `PAIR` | 与单个对端双向通信，常用于简单线程间通信 |
+| 原始字节流 | `STREAM` | 与普通 TCP 对端交换字节流，不要求对端使用 ZMQ |
+
+## Poller
+
+其可以同时监视多个socket是否有消息可读，是否可以发送的工具
+
+如果我们使用：
+
+```py
+message = socket_a.recv()
+```
+
+那么，程序会一直等待socket\_a收到消息，即使socket\_b已经有消息，程序也会卡住
+
+Poller可以等待多个socket：
+
+```py
+socket A ──┐
+socket B ──┼── Poller ──→ 告诉程序哪些 socket 已就绪
+socket C ──┘
+
 poller = zmq.Poller()
+
+# 注册：关注这两个 socket 是否有消息可读
+#socket_a 和 socket_b 监听两个不同的地址
 poller.register(socket_a, zmq.POLLIN)
 poller.register(socket_b, zmq.POLLIN)
 
 while True:
-    events = dict(poller.poll(timeout=1000))
+    # 最多等待 1000 毫秒；有事件时可以提前返回
+    events = dict(poller.poll(timeout=1000)) #检查是否有事件（socket,事件位mask）
+
     if events.get(socket_a, 0) & zmq.POLLIN:
-        handle_a(socket_a.recv_multipart())
+        message = socket_a.recv_multipart()
+        print("A 收到：", message)
+
     if events.get(socket_b, 0) & zmq.POLLIN:
-        handle_b(socket_b.recv_multipart())
+        message = socket_b.recv_multipart()
+        print("B 收到：", message)
 ```
 
-LMCache 的轮询循环还要响应新操作通知、监视服务端连接状态，以及处理服务端回信。Poller 正好把这些事件源放进同一个等待点。
+## In LmCache
 
-## LMCache 的三层分工
+在LmCache中，ZMQ的作用是链接vllm/sglang侧和lmcahe侧：
 
-在我的笔记所分析的实现里，ZMQ 连起 vLLM/SGLang 一侧的 Worker 和 LMCache 的消息队列服务端。核心是三个角色：
+```py
+【Worker 进程】                              【Server 进程】
 
-| 角色 | 所在侧 | 做什么 |
-| --- | --- | --- |
-| `MessageQueueClient`（MQC） | Worker | 接收调用方的操作，用 `pending_futures[uid]` 等待对应结果 |
-| `ClientPollingLoop` | Worker | 共享轮询线程，管理 `DEALER`、连接监视器和待发送操作 |
-| `MessageQueueServer`（MQS） | Server | 用 `ROUTER` 收请求，分发给 Handler，再发送响应 |
-
-```text
-Worker                                      LMCache Server
-
-MQC × N                                    MQS 主循环
-├─ input_queue → 待发送操作                 ├─ Poller
-└─ pending_futures[uid]                     │  ├─ ROUTER：收客户端请求
-       │                                    │  └─ output fd：响应已就绪
-       ↓                                    ├─ handlers[op]
-ClientPollingLoop（共享线程）                 ├─ extra_pools：处理阻塞任务
-├─ Poller                                   ├─ output_queue
-│  ├─ notifier fd：有新操作                  └─ streams：流式订阅
-│  ├─ monitor × N：连接状态                       ↑
-│  └─ DEALER × N：服务端回信         请求 / 响应 ↔│
-└─ _ops_queue → _process_ops
+ClientPollingLoop（1 个线程）                 MQS 主循环线程 "mq-server-thread"
+├─ poller                                    ├─ poller
+│   ├─ notifier fd   ← 敲铃传 ops            │   ├─ ROUTER socket   ← 就是客户端 DEALER
+│   ├─ monitor ×N    ← 监听"MQS 是否掉线"     │   └─ output fd      ← 敲铃传响应帧
+│   └─ DEALER ×N     ← 收 MQS 的回信          │       （eventfd/self-pipe）
+├─ _ops_queue    ←→  _process_ops            ├─ output_queue  ←→  _send_responses
+└─ _socket_to_client / _monitor_to_client    └─ handlers: dict[op → Sync/BlockingHandler]
+                                             ├─ extra_pools（affinity/normal 线程池）
+MQC（N 个实例）                               └─ streams 表（流式订阅）
+├─ pending_futures[uid] → future
+└─ input_queue → 发送
 ```
 
-服务端在地址上绑定一个 `ROUTER`，多个客户端的 `DEALER` 都可以连接它。服务端通过连接身份把回复送回正确的客户端；至于具体由哪个 Handler 或线程池处理，是服务端内部的事。
+其主要有三个class构成信息交流过程：
 
-## 一次请求的完整链路
+- Message Queue Client
+- ClientPollingLoop
+- Message Queue Server
 
-1. 调用方通过 MQC 提交操作。MQC 为请求分配 `uid`，并在 `pending_futures` 中登记 Future。
-2. 操作进入客户端队列，通知描述符唤醒 `ClientPollingLoop`。
-3. 轮询线程取出操作，经对应的 `DEALER` 发往 MQS。
-4. MQS 的 `ROUTER` 收到消息，识别客户端身份与操作类型，交给对应 Handler；阻塞任务可以进入额外线程池。
-5. 结果放入服务端输出队列，输出通知唤醒 MQS 主循环。
-6. `ROUTER` 按客户端身份发送响应；客户端轮询线程收到后转交 MQC。
-7. MQC 用 `uid` 找到并完成相应 Future，调用方拿到结果。
+其中MQC和ClientPollingLoop构成Client侧，而MQS独自构成Server侧。其原因是client侧可以connect多个端口，而server侧一个端口只能被一个socket监听。因此我们无需知道server侧的路由
 
-这里有两层不同的“找回去”：**ROUTER identity 找到客户端连接，`uid` 找到这个客户端里等待的请求。** 把这两层分清，整个异步请求/响应流程就容易理解了。
+![Worker 与 LMCache Server 的 ZMQ 通信流程](../../images/zmq-lmcache-flow.png)
 
-## 总结
-
-ZMQ 在这里提供进程间消息传输、异步收发和身份路由；LMCache 在它之上用 MQC、轮询线程、Handler 与 Future 组织请求生命周期。读代码时沿着 `input_queue → DEALER → ROUTER → Handler → ROUTER → DEALER → pending_futures[uid]` 追踪，往往比单独看每个类更直观。
-
-本文根据我的 [LmCache Notion 笔记](https://app.notion.com/p/3e98c4633d288074a135e9278b7dfaef) 整理。具体类名和流程以所读版本的实现为准。
+这里展示的是一个简化版本的流程图，但是已经包含必要流程。实现了worker和lmcache的交流

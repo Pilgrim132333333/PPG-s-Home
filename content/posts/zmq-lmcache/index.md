@@ -130,3 +130,5 @@ There are two distinct return addresses: **ROUTER identity selects the client co
 ZMQ supplies inter-process messaging, asynchronous sockets, and identity-based routing. LMCache adds queues, handlers, polling loops, and Futures to manage the request lifecycle. A useful path to trace in the code is `input_queue → DEALER → ROUTER → Handler → ROUTER → DEALER → pending_futures[uid]`.
 
 Adapted from my [LmCache Notion notes](https://app.notion.com/p/3e98c4633d288074a135e9278b7dfaef). Class names and flow describe the implementation version I studied.
+
+![The original Worker to LMCache Server ZMQ flow diagram](../images/zmq-lmcache-flow.png)
